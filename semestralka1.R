@@ -50,7 +50,92 @@
 ################################################################################
   
 # 3. Vytvořte graf pomocí ggplot s následujícími parametry (5b):
+  # 3.a  Graf bude vytvořen pro data o kosatcích (dataset iris)
+  library(ggplot2)
+  head(iris)
   
+  # 3.b  Graf bude na ose x znázorňovat proměnnou Petal.Length a na ose y Petal.Width
+  ggplot(data=iris, aes(x=Petal.Length, y=Petal.Width))
+  
+  # 3.c Data budou znázorněna formou bodů a velikost bodu bude odpovídat součinu hodnot Sepal.Length a Sepal.Width.
+  ggplot(data=iris) + geom_point(mapping = aes(x = Petal.Length, y = Petal.Width, size = Sepal.Length*Sepal.Width))
+  
+  # 3.d Body budou barevně odlišené dle jednotlivé skupiny kosatců (species), přičemž použité barvy budou následující: #391e52, #b8af23 a #868cc9
+   ggplot(data=iris) + 
+    geom_point(mapping = aes(
+      x = Petal.Length, 
+      y = Petal.Width, 
+      color=Species, 
+      size = Sepal.Length*Sepal.Width))+
+    scale_color_manual(values = c('#391e52', '#b8af23', '#868cc9'))
+  
+  
+  
+  # 3.e Pro každou skupinu bude v grafu zvlášťě vykreslena regresní křivka
+  
+  ggplot(data=iris) + geom_point(mapping = aes(
+      x = Petal.Length, 
+      y = Petal.Width, 
+      color=Species, 
+      size = Sepal.Length*Sepal.Width)
+      ) + 
+    scale_color_manual(values = c('#391e52', '#b8af23', '#868cc9')) +
+    geom_smooth(
+      mapping = aes(
+        x = Petal.Length, 
+        y = Petal.Width, 
+        method = 'lm',
+        group=Species
+      )
+    )
+  
+  # 3.f Graf bude mít odpovídající popisky os x, y, a nadpis a dále i legendy.
+  
+  ggplot(data=iris) + geom_point(mapping = aes(
+    x = Petal.Length, 
+    y = Petal.Width, 
+    color=Species, 
+    size = Sepal.Length*Sepal.Width)
+  ) +
+  scale_color_manual(values = c('#391e52', '#b8af23', '#868cc9')) + 
+    geom_smooth(
+      mapping = aes(
+        x = Petal.Length, 
+        y = Petal.Width, 
+        method = 'lm',
+        group=Species
+      )
+    )+
+    xlab("Délka lístku") +
+    ylab("Šířka lístku") +
+    labs(color = "Barvy podle Species", size='Velikost podle součinu hodnot
+Sepal.Length a Sepal.Width', title = 'Graf závislosti Petal.Length na Petal.Width. Dataset Iris') 
+  
+  # 3.g Graf rozdělte dle skupiny kosatců (Species) do samostatných oken, která budou uspořádaná v jednom sloupci
+  ggplot(data=iris) + geom_point(mapping = aes(
+    x = Petal.Length, 
+    y = Petal.Width, 
+    color=Species, 
+    size = Sepal.Length*Sepal.Width)
+  ) +
+    scale_color_manual(values = c('#391e52', '#b8af23', '#868cc9')) + 
+    geom_smooth(
+      mapping = aes(
+        x = Petal.Length, 
+        y = Petal.Width, 
+        method = 'lm',
+        group=Species
+      )
+    )+
+    xlab("Délka lístku") +
+    ylab("Šířka lístku") +
+    labs(color = "Barvy podle Species", size='Velikost podle součinu hodnot
+  Sepal.Length a Sepal.Width', title = 'Graf závislosti Petal.Length na Petal.Width. Dataset Iris') +
+    facet_wrap(~ Species, ncol=1)
+    
+  
+  
+    
 ################################################################################
 ################################################################################
 ################################################################################
