@@ -9,7 +9,7 @@
   # 1.a.2 Průměrnou hodnotu všech ukazatelů v třídění na to zda auto má / či nemá automatickou převodovku (am) pro jednotlivé počty válců zároveň (cyl).
 
   aggregate(apply, list(mtcars$am, mtcars$cyl), mean) # to pocita prumer kazde vlastnosti v DF podle 2 dimenze (prumer ve stloupci) 
-  aggregate(apply(mtcars,1,mean), list(mtcars$am, mtcars$cyl), mean) # to pocita prumer všech ukazatelů  podle 1 dimenze (prumer v radku) a pak prumer tech prumeru 
+ 
 
 # Používám aggregate pro počítání z tříděním na třídy podle počtu válců a převodovky. Pro práce z prumerama 1 dimenze, za první argument aggregate používám apply z dimenze 1
 
