@@ -1,17 +1,18 @@
 # 1. Příklad na funkce z rodiny apply a aggregate (5b).
 
   # 1.a.1 
-  # Průměrnou hodnotou spotřeby (mpg) pro jednotlivé počty válců (cyl)
-  aggregate(mtcars$mpg, list(mtcars$cyl), mean)
 
-  # Používám aggregate pro počítání z tříděním na třídy podle počtu válců. Podle dokumentece 1 argument co spočítat, 2 (ve formátu list) jak třídit, 3 funkce. V našim úkolů je průměr 
+    aggregate(mtcars$mpg, list(mtcars$cyl), mean)
+    
+    # Používám aggregate pro počítání z tříděním na třídy podle počtu válců. Podle dokumentece 1 argument co spočítat, 2 (ve formátu list) jak třídit, 3 funkce. V našim úkolů je průměr 
 
-  # 1.a.2 Průměrnou hodnotu všech ukazatelů v třídění na to zda auto má / či nemá automatickou převodovku (am) pro jednotlivé počty válců zároveň (cyl).
 
-  aggregate(apply, list(mtcars$am, mtcars$cyl), mean) # to pocita prumer kazde vlastnosti v DF podle 2 dimenze (prumer ve stloupci) 
- 
 
-# Používám aggregate pro počítání z tříděním na třídy podle počtu válců a převodovky. Pro práce z prumerama 1 dimenze, za první argument aggregate používám apply z dimenze 1
+  # 1.a.2 
+
+    aggregate(apply, list(mtcars$am, mtcars$cyl), mean) # to pocita prumer kazde vlastnosti v DF podle 2 dimenze (prumer ve stloupci) 
+    
+    # Používám aggregate pro počítání z tříděním na třídy podle počtu válců a převodovky. Pro práce z prumerama 1 dimenze, za první argument aggregate používám apply z dimenze 1
 
 
 ################################################################################
@@ -21,7 +22,6 @@
 ################################################################################
 
 # 2.Příklad na tzv. „wrapper“ funkci (5b)
-
 
   var_koef_count <- function(obj){ # definuju funkce
     if(is.vector(obj)){ # zjistím je to vektor, nebo ne
@@ -33,7 +33,6 @@
       return(NULL)
     }
   }
-
 
   # testování
   var_koef_count(1:10) # vektor
@@ -50,19 +49,19 @@
 ################################################################################
   
 # 3. Vytvořte graf pomocí ggplot s následujícími parametry (5b):
+
   # 3.a  Graf bude vytvořen pro data o kosatcích (dataset iris)
-  library(ggplot2)
-  head(iris)
+    library(ggplot2)
+    head(iris)
   
   # 3.b  Graf bude na ose x znázorňovat proměnnou Petal.Length a na ose y Petal.Width
-  ggplot(data=iris, aes(x=Petal.Length, y=Petal.Width)) # pouzivam prazdny ggplot
+    ggplot(data=iris, aes(x=Petal.Length, y=Petal.Width)) # pouzivam prazdny ggplot
   
   # 3.c Data budou znázorněna formou bodů a velikost bodu bude odpovídat součinu hodnot Sepal.Length a Sepal.Width.
-  ggplot(data=iris) + geom_point(mapping = aes(x = Petal.Length, y = Petal.Width, size = Sepal.Length*Sepal.Width)) # použiju geom_point abych zobrazit body, do mappingu žádám size pro nastavení velikosti bodu
+    ggplot(data=iris) + geom_point(mapping = aes(x = Petal.Length, y = Petal.Width, size = Sepal.Length*Sepal.Width)) # použiju geom_point abych zobrazit body, do mappingu žádám size pro nastavení velikosti bodu
 
-  
   # 3.d Body budou barevně odlišené dle jednotlivé skupiny kosatců (species), přičemž použité barvy budou následující: #391e52, #b8af23 a #868cc9
-  ggplot(data=iris) + 
+    ggplot(data=iris) + 
     geom_point(mapping = aes(
       x = Petal.Length, 
       y = Petal.Width, 
@@ -74,7 +73,7 @@
   
   # 3.e Pro každou skupinu bude v grafu zvlášťě vykreslena regresní křivka
   
-  ggplot(data=iris) + geom_point(mapping = aes(
+    ggplot(data=iris) + geom_point(mapping = aes(
       x = Petal.Length, 
       y = Petal.Width, 
       color=Species, 
@@ -91,51 +90,50 @@
     )
     # Regresní křivku přidám pomocí funkce geom_smooth. x,y budou vysvětlována a vysvětlující proměny (také je možné napsat regresní rovnice z dalšíma argumentama), metod lm pro regresní křivku, group=Species jsem použil pro vykreslení zvlášťě křivky pro každou skupinu.
   
+
   # 3.f Graf bude mít odpovídající popisky os x, y, a nadpis a dále i legendy.
   
-  ggplot(data=iris) + geom_point(mapping = aes(
-    x = Petal.Length, 
-    y = Petal.Width, 
-    color=Species, 
-    size = Sepal.Length*Sepal.Width)
-  ) +
-  scale_color_manual(values = c('#391e52', '#b8af23', '#868cc9')) + 
-    geom_smooth(
-      mapping = aes(
-        x = Petal.Length, 
-        y = Petal.Width, 
-        method = 'lm',
-        group=Species
-      )
-    )+
-    xlab("Délka lístku") +
-    ylab("Šířka lístku") +
-    labs(color = "Barvy podle Species", size='Velikost podle součinu hodnot
-Sepal.Length a Sepal.Width', title = 'Graf závislosti Petal.Length na Petal.Width. Dataset Iris') 
+    ggplot(data=iris) + geom_point(mapping = aes(
+      x = Petal.Length, 
+      y = Petal.Width, 
+      color=Species, 
+      size = Sepal.Length*Sepal.Width)
+    ) +
+    scale_color_manual(values = c('#391e52', '#b8af23', '#868cc9')) + 
+      geom_smooth(
+        mapping = aes(
+          x = Petal.Length, 
+          y = Petal.Width, 
+          method = 'lm',
+          group=Species
+        )
+      )+
+      xlab("Délka lístku") +
+      ylab("Šířka lístku") +
+      labs(color = "Barvy podle Species", size='Velikost podle součinu hodnot Sepal.Length a Sepal.Width', title = 'Graf závislosti Petal.Length na Petal.Width. Dataset Iris') 
     # xlab, y lab definuje nadpisy na osy, labs zadává další legendu.
   
   # 3.g Graf rozdělte dle skupiny kosatců (Species) do samostatných oken, která budou uspořádaná v jednom sloupci
-  ggplot(data=iris) + geom_point(mapping = aes(
-    x = Petal.Length, 
-    y = Petal.Width, 
-    color=Species, 
-    size = Sepal.Length*Sepal.Width)
-  ) +
-    scale_color_manual(values = c('#391e52', '#b8af23', '#868cc9')) + 
-    geom_smooth(
-      mapping = aes(
-        x = Petal.Length, 
-        y = Petal.Width, 
-        method = 'lm',
-        group=Species
-      )
-    )+
-    xlab("Délka lístku") +
-    ylab("Šířka lístku") +
-    labs(color = "Barvy podle Species", size='Velikost podle součinu hodnot
-  Sepal.Length a Sepal.Width', title = 'Graf závislosti Petal.Length na Petal.Width. Dataset Iris') +
-    facet_wrap(~ Species, ncol=1)
-    # facet_wrap povolí rozdělit grafy pro každou skupinu hodnot Species a definuju ncol pro uspořádání do jedneho sloupce.
+    ggplot(data=iris) + geom_point(mapping = aes(
+      x = Petal.Length, 
+      y = Petal.Width, 
+      color=Species, 
+      size = Sepal.Length*Sepal.Width)
+    ) +
+      scale_color_manual(values = c('#391e52', '#b8af23', '#868cc9')) + 
+      geom_smooth(
+        mapping = aes(
+          x = Petal.Length, 
+          y = Petal.Width, 
+          method = 'lm',
+          group=Species
+        )
+      )+
+      xlab("Délka lístku") +
+      ylab("Šířka lístku") +
+      labs(color = "Barvy podle Species", size='Velikost podle součinu hodnot Sepal.Length a Sepal.Width', title = 'Graf závislosti Petal.Length na Petal.Width. Dataset Iris') +
+      facet_wrap(~ Species, ncol=1)
+      # facet_wrap povolí rozdělit grafy pro každou skupinu hodnot Species a definuju ncol pro uspořádání do jedneho sloupce.
     
   
   
@@ -149,47 +147,47 @@ Sepal.Length a Sepal.Width', title = 'Graf závislosti Petal.Length na Petal.Wid
 # 4. Příklad na dplyr (10b)
   
   # 4.a
-  library(gapminder)
-  library(tidyverse)
-  library(dplyr)
-  head(gapminder)
+    library(gapminder)
+    library(tidyverse)
+    library(dplyr)
+    head(gapminder)
   
   # 4.b
-  getwd() # zkontroluju pracovní adresář
-  setwd('/home/pinguin/Documents/Unicorn2020/Analyza dat - semestralka1/Analyza_dat') # nastavím pracovní adresář
-  getwd() # zkontroluju nový pracovní adresář
-  file.create("kontinenty.csv") # vytvořím soubor kontinenty.csv
-  continents <- gapminder %>%  group_by(continent, year) %>% summarise(populace=sum(pop), .groups='drop') # třídím dataset gapminder podle kontinentů a roky, vytvořím proměnnou populace, která se bude rovnat součtu populace pro pro každou kombinace rok - kontinent
-  write.csv(continents, file='kontinenty.csv', row.names = F)  # uložím výsledek do souboru
+    getwd() # zkontroluju pracovní adresář
+    setwd('/home/pinguin/Documents/Unicorn2020/Analyza dat - semestralka1/Analyza_dat') # nastavím pracovní adresář
+    getwd() # zkontroluju nový pracovní adresář
+    file.create("kontinenty.csv") # vytvořím soubor kontinenty.csv
+    continents <- gapminder %>%  group_by(continent, year) %>% summarise(populace=sum(pop), .groups='drop') # třídím dataset gapminder podle kontinentů a roky, vytvořím proměnnou populace, která se bude rovnat součtu populace pro pro každou kombinace rok - kontinent
+    write.csv(continents, file='kontinenty.csv', row.names = F)  # uložím výsledek do souboru
   
   # Poznámka: používám LibreOfficeCalc, který dává nastavit oddělovač při načítání souborů. Nevím jak to bude na MSOffice
   
   # 4.c
-  continents <- read.csv('kontinenty.csv') # načtu daty z souboru. Může se použít proměna z minulého tašku, ale za méně více logicky dělat to jako samostatní kód, který se dá použít zvlášť 
-  continents <- continents %>% group_by(year) %>% mutate(svet_pop=sum(populace)) # třídím to podle let a vytvořím novou prom. svet_pop, do které uložím součet populace pro jednotlivé roky
-  write.csv(continents, file='kontinenty.csv', row.names = F) # uložím výsledek do souboru
+    continents <- read.csv('kontinenty.csv') # načtu daty z souboru. Může se použít proměna z minulého tašku, ale za méně více logicky dělat to jako samostatní kód, který se dá použít zvlášť 
+    continents <- continents %>% group_by(year) %>% mutate(svet_pop=sum(populace)) # třídím to podle let a vytvořím novou prom. svet_pop, do které uložím součet populace pro jednotlivé roky
+    write.csv(continents, file='kontinenty.csv', row.names = F) # uložím výsledek do souboru
   
   # 4.d
-  file.create("Evropa.csv") # vytvořím soubor Evropa.csv
-  europe <- gapminder  %>% filter(continent == 'Europe') %>% select(country, year, pop) # z datasetu gapminder vyberu si jenom pozorování pro Europske země, pak nechám jenom stloupce country, year a pop
-  write.csv(europe, file='Evropa.csv', row.names = F) # uložím výsledek do souboru
+    file.create("Evropa.csv") # vytvořím soubor Evropa.csv
+    europe <- gapminder  %>% filter(continent == 'Europe') %>% select(country, year, pop) # z datasetu gapminder vyberu si jenom pozorování pro Europske země, pak nechám jenom stloupce country, year a pop
+    write.csv(europe, file='Evropa.csv', row.names = F) # uložím výsledek do souboru
 
   # 4.e
-  continents <- read.csv('kontinenty.csv') # načtu daty z souboru
-  europe <- read.csv('Evropa.csv') # načtu daty z souboru
-  
-  continents_filtered <- continents %>% filter(continent == 'Europe') %>% select(year, svet_pop) # z kontinentu si vyfiltruju jenom Europu a nechám jenom stloupe year, svet_pop
-  europe <- left_join(x = europe, y = continents_filtered, by='year') # zpojim tabulky podle let
-  europe <- europe[!duplicated(europe$pop),] # Zároveň bude obsahovat pouze unikátní pozorování - to jsem nepochopil podle čeho musí být unikátní? Country se opakuje pro každý rok, rok se opakuje podle země, svět populace podle let. Takže může být unikátní jenom pop
-  write.csv(europe, file='Evropa.csv', row.names = F) # uložím výsledek do souboru
+    continents <- read.csv('kontinenty.csv') # načtu daty z souboru
+    europe <- read.csv('Evropa.csv') # načtu daty z souboru
+    
+    continents_filtered <- continents %>% filter(continent == 'Europe') %>% select(year, svet_pop) # z kontinentu si vyfiltruju jenom Europu a nechám jenom stloupe year, svet_pop
+    europe <- left_join(x = europe, y = continents_filtered, by='year') # zpojim tabulky podle let
+    europe <- europe[!duplicated(europe$pop),] # Zároveň bude obsahovat pouze unikátní pozorování - to jsem nepochopil podle čeho musí být unikátní? Country se opakuje pro každý rok, rok se opakuje podle země, svět populace podle let. Takže může být unikátní jenom pop
+    write.csv(europe, file='Evropa.csv', row.names = F) # uložím výsledek do souboru
   
   # 4.f
-  europe <- read.csv('Evropa.csv') # načtu daty z souboru
-  europe <- europe %>% mutate(podil_na_sv_p = round (pop/svet_pop, digits = 5)) %>% arrange(year, desc(podil_na_sv_p)) # vytvořím stloupec podil_na_sv_p do kterého uložím podíl populace státu v jednotlyvem roce na populace světu v stejném roce
-  write.csv(europe, file='Evropa.csv', row.names = F) # uložím výsledek do souboru
+    europe <- read.csv('Evropa.csv') # načtu daty z souboru
+    europe <- europe %>% mutate(podil_na_sv_p = round (pop/svet_pop, digits = 5)) %>% arrange(year, desc(podil_na_sv_p)) # vytvořím stloupec podil_na_sv_p do kterého uložím podíl populace státu v jednotlyvem roce na populace světu v stejném roce
+    write.csv(europe, file='Evropa.csv', row.names = F) # uložím výsledek do souboru
   
   # 4.g
-  read.csv('Evropa.csv') %>% head(7) # Výpisů 7 prvních pozorování
+    read.csv('Evropa.csv') %>% head(7) # Výpisů 7 prvních pozorování
   
   
 ################################################################################
