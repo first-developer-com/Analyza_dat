@@ -283,6 +283,7 @@ Sepal.Length a Sepal.Width', title = 'Graf závislosti Petal.Length na Petal.Wid
   library(rvest) # pridavam knihovnu pro parsing webu
   library(stringr)
   library(reshape2)
+  library(dplyr)
   
   # nastavim si slozku pro daty
   getwd()
@@ -349,4 +350,25 @@ Sepal.Length a Sepal.Width', title = 'Graf závislosti Petal.Length na Petal.Wid
   ?assign
   d<-5
   assign(paste("perf.a", "1", sep=""), d)
+  # 1) Try in long format
+  # 2) try to merge
+  # 3)   brigadnici <- rbind(holky, kluci) add rows
+  #4) brigadnici_bonus <- cbind(brigadnici, bonus, stringsAsFactors = FALSE) # i tady můžeme zakázat tvorbu faktorů pridani stloupce
+  
+  id <- c(2)
+  first <- c("1")
+  second <- c("2")
+  third <- c("3")
+  forth <- c("4")
+  fifth <- c("5")
+  sixs <- c("6")
+  df1 <- data.frame(id=id, first=first, second=second, third=third, forth=forth)
+  df2 <- data.frame(id=id, fifth = fifth, sixs=sixs)
+  df3 <- merge(df1, df2, by=intersect(id, id),  all = T, no.dups=T)
+  
+  ?merge
+  df4 <- join(df1, df2, type = "inner")
+  
+  
+  inner_join
   
