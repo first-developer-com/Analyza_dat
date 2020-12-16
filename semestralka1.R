@@ -309,27 +309,35 @@ Sepal.Length a Sepal.Width', title = 'Graf závislosti Petal.Length na Petal.Wid
   # postupne parsuju vsichni odkazy souboru podle obce
   for(i in 1:1){ #max_count
     pagin_page <-read_html(paste0(base_url, pagination_href, '=', i))
-    obce <- html_nodes(pagin_page, "table.table.table-striped.table-condesed.support>tbody>tr>td>a")
-    
-    for(i in 1:1){
-      print(paste0(base_url, html_attr(obce[i], name="href")))
-      obec_detail <- read_html(paste0(base_url, html_attr(obce[i], name="href")))
-      all_years <- html_nodes(obec_detail, "div.tab-content>.tab-pane") #%>% html_text()
+    obce <- html_nodes(pagin_page, "table.table.table-striped.table-condesed.support>tbody>tr")
+    lapply(obce, function(obec) {
+      #print(obec %>% html_text())
+      obec_name <- obec %>% html_nodes('td>a') %>% html_text()
+      kraj_name <- obec %>% html_nodes('td>p') %>% html_text()
+      okres_name <- obec %>% html_nodes('td:nth-child(3)') %>% html_text()
+      orp <- obec %>% html_nodes('td:nth-child(2)') %>% html_text()
+      #print(c(obec_name, kraj_name, okres_name, opr))
+      odkaz <- obec %>% html_nodes('td>a')
+      
+      obec_detail <- read_html(paste0(base_url, html_attr(odkaz, name="href")))
+      all_years <- html_nodes(obec_detail, "div.tab-content>.tab-pane")
       lapply(all_years, function(year) {
         id <- year %>% html_attr(name = "id")
         yearn <- gsub("[^0-9.-]", "", id)
-        print(yearn)
+        #print(yearn)
         
         table <- year %>% html_nodes("table")  %>% html_table(fill=TRUE)
         my_df <- as.data.frame(table[[1]])
-        my_df$obce = 'Obce'
+        my_df$obce = obec_name
         my_df <- dcast(my_df, obce ~ Popis, value.var = "Hodnota")
+        my_df$kraj <- kraj_name
+        my_df$orp <- orp
+        my_df$okres <- okres_name
+        
         #assign(paste("perf.a", "1", sep=""),aaa)
-        assign(paste("Obec", yearn, sep="_"), my_df, envir = .GlobalEnv)
+        assign(paste(obec_name, yearn, sep="_"), my_df, envir = .GlobalEnv)
       })
-      
-   
-    }
+    })
   }
   # obec/download/excel/data/2727/
   
