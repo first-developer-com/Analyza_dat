@@ -284,6 +284,8 @@ Sepal.Length a Sepal.Width', title = 'Graf závislosti Petal.Length na Petal.Wid
   library(stringr)
   library(reshape2)
   library(dplyr)
+  library(plyr)
+  library(sqldf)
   
   # nastavim si slozku pro daty
   getwd()
