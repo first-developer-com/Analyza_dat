@@ -280,121 +280,76 @@ Sepal.Length a Sepal.Width', title = 'Graf závislosti Petal.Length na Petal.Wid
 # 6. Webscraping + zpracování dat (15)
 
 
-  library(rvest) # pridavam knihovnu pro parsing webu
-  library(stringr)
-  library(reshape2)
-  library(dplyr)
-  library(plyr)
-  library(sqldf)
+  library(rvest) # knihovna pro parsing webu
+  library(stringr) # knihovna pro práce z string
+  library(reshape2) # knihovna pro transformace dlouhý/široký formát
+  #library(dplyr)
+  library(plyr) # knihovna pro spojení data.frame
+  #library(sqldf)
   
-  # nastavim si slozku pro daty
+  # nastavím si složku pro daty
   getwd()
   #setwd('/home/pinguin/Documents/Unicorn2020/Analyza dat - semestralka1/')
-  dir.create('ukol6Data')
-  setwd('ukol6Data')
-  getwd()
+  dir.create('ukol6Data') # přidám složku pro csv soubory
+  setwd('ukol6Data') # nastavím novou dir, jako pracovní adresář
+  #getwd()
   
   
-  # nastavim zakladni cesty
-  url <- 'http://www.obcepro.cz/obce'
+  # nastavím základní cesty
+  url <- 'http://www.obcepro.cz/obce' 
   base_url <- 'http://www.obcepro.cz'
   
   # parsovani webu
   source <- read_html(url)
   
-  # dostavam pocet stranek paginace a odkaz pro jednotlivou stranku
-  pagination_last_href <- html_attr(html_nodes(source, "ul.pagination>li.last>a"),name="href")
-  max_count <- as.numeric(strsplit(pagination_last_href, "=")[[1]][2])
-  pagination_href <- strsplit(pagination_last_href, "=")[[1]][1]
+  # dostávám počet stránek paginace a odkaz pro jednotlivou stránku
+  pagination_last_href <- html_attr(html_nodes(source, "ul.pagination>li.last>a"),name="href") # získání cesty posledního odkazu strankovace
+  max_count <- as.numeric(strsplit(pagination_last_href, "=")[[1]][2]) # získání čísla poslední stránky strankovace
+  pagination_href <- strsplit(pagination_last_href, "=")[[1]][1] # odkaz na stránku strankovace bez čísla stránky
   
   #paste0(base_url, pagination_href, '=', 1)
   
-  # postupne parsuju vsichni odkazy souboru podle obce
-  for(i in 1:1){ #max_count
-    pagin_page <-read_html(paste0(base_url, pagination_href, '=', i))
-    obce <- html_nodes(pagin_page, "table.table.table-striped.table-condesed.support>tbody>tr")
-    lapply(obce, function(obec) {
+  for(i in 1:1){ #max_count # projdu cyklusem všichni stránky stránkování
+    pagin_page <-read_html(paste0(base_url, pagination_href, '=', i)) # parsovani jednotlivé stránky obce/prehled?page
+    obce <- html_nodes(pagin_page, "table.table.table-striped.table-condesed.support>tbody>tr") # získání řádků z tabulky obcí 
+    lapply(obce, function(obec) { # pomocí lapply proházím zednotlive řádky (obcí)
       #print(obec %>% html_text())
-      obec_name <- obec %>% html_nodes('td>a') %>% html_text()
-      kraj_name <- obec %>% html_nodes('td>p') %>% html_text()
-      okres_name <- obec %>% html_nodes('td:nth-child(3)') %>% html_text()
-      orp <- obec %>% html_nodes('td:nth-child(2)') %>% html_text()
+      obec_name <- obec %>% html_nodes('td>a') %>% html_text() # získám název obce v string (první buňka, text odkazu)
+      kraj_name <- obec %>% html_nodes('td>p') %>% html_text() # získám název kraje v string (první buňka, text odstavce)
+      okres_name <- obec %>% html_nodes('td:nth-child(3)') %>% html_text() # získám název okresu v string (třetí buňka, text v td)
+      orp <- obec %>% html_nodes('td:nth-child(2)') %>% html_text() # získám orp v string (druhá buňka, text v td)
       #print(c(obec_name, kraj_name, okres_name, opr))
-      odkaz <- obec %>% html_nodes('td>a')
+      odkaz <- obec %>% html_nodes('td>a') # získám odkaz jednotlivého obce
       
-      obec_detail <- read_html(paste0(base_url, html_attr(odkaz, name="href")))
-      all_years <- html_nodes(obec_detail, "div.tab-content>.tab-pane")
-      lapply(all_years, function(year) {
-        id <- year %>% html_attr(name = "id")
-        yearn <- gsub("[^0-9.-]", "", id)
+      obec_detail <- read_html(paste0(base_url, html_attr(odkaz, name="href"))) # zparsuju si stránku obce. Pokud to neklikám v prohlížeči, dostávám to na stránce, není v modal okně
+      all_years <- html_nodes(obec_detail, "div.tab-content>.tab-pane") # vytáhnu z toho blok z tabulkama bez seznamu let
+      lapply(all_years, function(year) { # projdu pomocí lapply všichni roky tohoto obce
+        id <- year %>% html_attr(name = "id") # vytáhnu attribut id u div. Div je první child all_years, a jeho sourozence jsou bloky z tabulkama jednotlivých let. Id je v formátu xx0000
+        yearn <- gsub("[^0-9.-]", "", id) # získám rok pomocí gsub a regularky pro jen čísla
+        # pro kazdy rok podrebuju 1 data.frame. Zkontroluju existovani, pokud ne, zalozim
         if(!exists(paste("obci", yearn, sep = "_"))){
-          assign(paste("obci", yearn, sep="_"), data.frame(), envir = .GlobalEnv)
+          assign(paste("obci", yearn, sep="_"), data.frame(), envir = .GlobalEnv) # pro definice nazevu prom z konlatenace roku, využiju assign, a dám to do globálního env
         }
 
-        table <- year %>% html_nodes("table")  %>% html_table(fill=TRUE)
-        my_df <- as.data.frame(table[[1]])
-        my_df$obce = obec_name
-        my_df <- dcast(my_df, obce ~ Popis, value.var = "Hodnota")
-        my_df$kraj <- kraj_name
-        my_df$orp <- orp
-        my_df$okres <- okres_name
-        assign(paste("obci", yearn, sep="_"), join(eval(parse(text = paste("obci", yearn, sep="_"))), my_df, type = "full"), envir = .GlobalEnv)
+        table <- year %>% html_nodes("table")  %>% html_table(fill=TRUE) # získám tabulku z statistikama za 1 rok v 1 obcí
+        my_df <- as.data.frame(table[[1]]) # převedu do data.frame
+        my_df$obce = obec_name # přidám název obce
+        my_df <- dcast(my_df, obce ~ Popis, value.var = "Hodnota") # převedu data.frame do širokého formátu
+        my_df$kraj <- kraj_name # přidám název kraje
+        my_df$orp <- orp # přidám orp
+        my_df$okres <- okres_name # přidám název okresu
+        assign(paste("obci", yearn, sep="_"), join(eval(parse(text = paste("obci", yearn, sep="_"))), my_df, type = "full"), envir = .GlobalEnv) # přidám do data.frame roku jednotlivý obec. Join type=full může zpojit df z různím počtem stloupce a označit chybějící hodnoty NA
         
-        #assign(paste("perf.a", "1", sep=""),aaa)
-        #assign(paste(obec_name, yearn, sep="_"), my_df, envir = .GlobalEnv)
       })
     })
   }
-  # obec/download/excel/data/2727/
-  
-  my_df$id = 'aaa'
-  tab_long2 <- melt(my_df, id = "id")
-  
-  head(tab_long2)
-  tab_wide2 <- dcast(my_df, id ~ Popis, value.var = "Hodnota")  
-  ?assign
-  d<-5
-  assign(paste("perf.a", "1", sep=""), d)
-  # 1) Try in long format
-  # 2) try to merge
-  # 3)   brigadnici <- rbind(holky, kluci) add rows
-  #4) brigadnici_bonus <- cbind(brigadnici, bonus, stringsAsFactors = FALSE) # i tady můžeme zakázat tvorbu faktorů pridani stloupce
-  
-  id <- c(3)
-  first <- c("1")
-  second <- c("2")
-  third <- c("3")
-  forth <- c("4")
-  fifth <- c("5")
-  sixs <- c("6")
-  df1 <- data.frame(id=id, first=first, second=second, third=third, forth=forth)
-  df2 <- data.frame(id=id, fifth = fifth, sixs=sixs)
-  df3 <- data.frame(id=id, first=first, second=second, third=third, forth=forth)
-  df4 <- data.frame(id=id, first=first, second=second, third=third, forth=forth, fifth = fifth, sixs=sixs)
   
   
-  mdf3 <- merge(df1, df2, by=intersect(id, id),  all = T, no.dups=T)
-  
-  ?merge
-  mdf4 <- join(df1, df2, type = "full") #plyr  To kurva funguje!!!!
-  # https://rstudio-pubs-static.s3.amazonaws.com/170807_3daed30c135d4a0b8861c42449f1ff80.html
-  
-  mdf5 <- join(df3, df4, type = "full")
-  
-  
-  df_empty <- data.frame() # prazdny df
-  mdf5 <- join(mdf5, df1, type = "full")
-  
-  df5 <- sqldf("SELECT * FROM df1 JOIN df2")
-  
-  if(exists("mdf9")){
-    print("T")
-  }else{
-    print("F")
-  }
-  
-  inner_join
-  assign(paste("obec_name", "yearn", sep="_"), data_frame(), envir = .GlobalEnv)
-  print(paste("obec_name", "yearn", sep="_")
-  eval(parse(text = paste("obec_name", "yearn", sep="_")))# to je ok
+for(var in ls()){
+  if(str_detect(var, '^obci_')){
+    #print(i)
+    write.csv(eval(parse(text=var)), file=paste0(var,'.csv'), row.names = F) 
+  } 
+}
+  write.csv(obci_1930, file=test.csv, row.names = F)
   
