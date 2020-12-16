@@ -280,13 +280,13 @@ Sepal.Length a Sepal.Width', title = 'Graf závislosti Petal.Length na Petal.Wid
 # 6. Webscraping + zpracování dat (15)
 
 
-  install.packages("rvest") 
   library(rvest) # pridavam knihovnu pro parsing webu
-  
+  library(stringr)
+  library(reshape2)
   
   # nastavim si slozku pro daty
   getwd()
-  setwd('/home/pinguin/Documents/Unicorn2020/Analyza dat - semestralka1/')
+  #setwd('/home/pinguin/Documents/Unicorn2020/Analyza dat - semestralka1/')
   dir.create('ukol6Data')
   setwd('ukol6Data')
   getwd()
@@ -310,9 +310,35 @@ Sepal.Length a Sepal.Width', title = 'Graf závislosti Petal.Length na Petal.Wid
   for(i in 1:1){ #max_count
     pagin_page <-read_html(paste0(base_url, pagination_href, '=', i))
     obce <- html_nodes(pagin_page, "table.table.table-striped.table-condesed.support>tbody>tr>td>a")
-    print(obce)
+    
+    for(i in 1:1){
+      print(paste0(base_url, html_attr(obce[i], name="href")))
+      obec_detail <- read_html(paste0(base_url, html_attr(obce[i], name="href")))
+      all_years <- html_nodes(obec_detail, "div.tab-content>.tab-pane") #%>% html_text()
+      lapply(all_years, function(year) {
+        id <- year %>% html_attr(name = "id")
+        yearn <- gsub("[^0-9.-]", "", id)
+        print(yearn)
+        
+        table <- year %>% html_nodes("table")  %>% html_table(fill=TRUE)
+        my_df <- as.data.frame(table[[1]])
+        my_df$obce = 'Obce'
+        my_df <- dcast(my_df, obce ~ Popis, value.var = "Hodnota")
+        #assign(paste("perf.a", "1", sep=""),aaa)
+        assign(paste("Obec", yearn, sep="_"), my_df, envir = .GlobalEnv)
+      })
+      
+   
+    }
   }
   # obec/download/excel/data/2727/
-
   
-  a <- read.table('http://www.obcepro.cz/obec/download/excel/data/2727/')
+  my_df$id = 'aaa'
+  tab_long2 <- melt(my_df, id = "id")
+  
+  head(tab_long2)
+  tab_wide2 <- dcast(my_df, id ~ Popis, value.var = "Hodnota")  
+  ?assign
+  d<-5
+  assign(paste("perf.a", "1", sep=""), d)
+  
