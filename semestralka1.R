@@ -307,7 +307,7 @@ Sepal.Length a Sepal.Width', title = 'Graf závislosti Petal.Length na Petal.Wid
   max_count <- as.numeric(strsplit(pagination_last_href, "=")[[1]][2])
   pagination_href <- strsplit(pagination_last_href, "=")[[1]][1]
   
-  paste0(base_url, pagination_href, '=', 1)
+  #paste0(base_url, pagination_href, '=', 1)
   
   # postupne parsuju vsichni odkazy souboru podle obce
   for(i in 1:1){ #max_count
@@ -327,8 +327,10 @@ Sepal.Length a Sepal.Width', title = 'Graf závislosti Petal.Length na Petal.Wid
       lapply(all_years, function(year) {
         id <- year %>% html_attr(name = "id")
         yearn <- gsub("[^0-9.-]", "", id)
-        #print(yearn)
-        
+        if(!exists(paste("obci", yearn, sep = "_"))){
+          assign(paste("obci", yearn, sep="_"), data.frame(), envir = .GlobalEnv)
+        }
+
         table <- year %>% html_nodes("table")  %>% html_table(fill=TRUE)
         my_df <- as.data.frame(table[[1]])
         my_df$obce = obec_name
@@ -336,9 +338,10 @@ Sepal.Length a Sepal.Width', title = 'Graf závislosti Petal.Length na Petal.Wid
         my_df$kraj <- kraj_name
         my_df$orp <- orp
         my_df$okres <- okres_name
+        assign(paste("obci", yearn, sep="_"), join(eval(parse(text = paste("obci", yearn, sep="_"))), my_df, type = "full"), envir = .GlobalEnv)
         
         #assign(paste("perf.a", "1", sep=""),aaa)
-        assign(paste(obec_name, yearn, sep="_"), my_df, envir = .GlobalEnv)
+        #assign(paste(obec_name, yearn, sep="_"), my_df, envir = .GlobalEnv)
       })
     })
   }
@@ -374,14 +377,24 @@ Sepal.Length a Sepal.Width', title = 'Graf závislosti Petal.Length na Petal.Wid
   
   ?merge
   mdf4 <- join(df1, df2, type = "full") #plyr  To kurva funguje!!!!
+  # https://rstudio-pubs-static.s3.amazonaws.com/170807_3daed30c135d4a0b8861c42449f1ff80.html
   
   mdf5 <- join(df3, df4, type = "full")
   
   
-  
+  df_empty <- data.frame() # prazdny df
+  mdf5 <- join(mdf5, df1, type = "full")
   
   df5 <- sqldf("SELECT * FROM df1 JOIN df2")
   
+  if(exists("mdf9")){
+    print("T")
+  }else{
+    print("F")
+  }
   
   inner_join
+  assign(paste("obec_name", "yearn", sep="_"), data_frame(), envir = .GlobalEnv)
+  print(paste("obec_name", "yearn", sep="_")
+  eval(parse(text = paste("obec_name", "yearn", sep="_")))# to je ok
   
