@@ -357,7 +357,7 @@ Sepal.Length a Sepal.Width', title = 'Graf závislosti Petal.Length na Petal.Wid
   # 3)   brigadnici <- rbind(holky, kluci) add rows
   #4) brigadnici_bonus <- cbind(brigadnici, bonus, stringsAsFactors = FALSE) # i tady můžeme zakázat tvorbu faktorů pridani stloupce
   
-  id <- c(2)
+  id <- c(3)
   first <- c("1")
   second <- c("2")
   third <- c("3")
@@ -366,10 +366,21 @@ Sepal.Length a Sepal.Width', title = 'Graf závislosti Petal.Length na Petal.Wid
   sixs <- c("6")
   df1 <- data.frame(id=id, first=first, second=second, third=third, forth=forth)
   df2 <- data.frame(id=id, fifth = fifth, sixs=sixs)
-  df3 <- merge(df1, df2, by=intersect(id, id),  all = T, no.dups=T)
+  df3 <- data.frame(id=id, first=first, second=second, third=third, forth=forth)
+  df4 <- data.frame(id=id, first=first, second=second, third=third, forth=forth, fifth = fifth, sixs=sixs)
+  
+  
+  mdf3 <- merge(df1, df2, by=intersect(id, id),  all = T, no.dups=T)
   
   ?merge
-  df4 <- join(df1, df2, type = "inner")
+  mdf4 <- join(df1, df2, type = "full") #plyr  To kurva funguje!!!!
+  
+  mdf5 <- join(df3, df4, type = "full")
+  
+  
+  
+  
+  df5 <- sqldf("SELECT * FROM df1 JOIN df2")
   
   
   inner_join
