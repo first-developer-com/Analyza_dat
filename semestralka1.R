@@ -4,14 +4,14 @@
   # Průměrnou hodnotou spotřeby (mpg) pro jednotlivé počty válců (cyl)
   aggregate(mtcars$mpg, list(mtcars$cyl), mean)
 
-  # Používám aggregate pro počítání z tříděním na třídy podle počtu válců. Podle dokumentece 1 argument co spočítat, 2 (ve formátu list) jak třídit, 3 funkce. V našim úkolů je průměr 
+  # Používám aggregate pro počítání z tříděním na třídy podle počtu válců. Podle dokumentece 1 -  argument je co spočítat, 2 - (ve formátu list) jak třídit, 3 - funkce. V našim úkolů je průměr.
 
   # 1.a.2 Průměrnou hodnotu všech ukazatelů v třídění na to zda auto má / či nemá automatickou převodovku (am) pro jednotlivé počty válců zároveň (cyl).
 
-  aggregate(mtcars, list(mtcars$am, mtcars$cyl), mean) # to pocita prumer kazde vlastnosti v DF podle 2 dimenze (prumer ve stloupci) 
-  aggregate(apply(mtcars,1,mean), list(mtcars$am, mtcars$cyl), mean) # to pocita prumer všech ukazatelů  podle 1 dimenze (prumer v radku) a pak prumer tech prumeru 
+  aggregate(mtcars, list(mtcars$am, mtcars$cyl), mean) # to počítá průmer každé vlastnosti v DF podle 2. dimenze (průmer ve stloupcích) 
+  aggregate(apply(mtcars,1,mean), list(mtcars$am, mtcars$cyl), mean) # to počítá průměr všech ukazatelů  podle 1. dimenze (průměr v řádku) a pak průměr těch průměru
 
-# Používám aggregate pro počítání z tříděním na třídy podle počtu válců a převodovky. Pro práce z prumerama 1 dimenze, za první argument aggregate používám apply z dimenze 1
+# Používám aggregate pro počítání z rozdělením na třídy podle počtu válců a převodovky. Pro práce z průměry 1 dimenze, za první argument aggregate používám apply z dimenze 1
 
 
 ################################################################################
@@ -24,12 +24,12 @@
 
 
   var_koef_count <- function(obj){ # definuju funkce
-    if(is.vector(obj)){ # zjistím je to vektor, nebo ne
-      return(sd(obj)/mean(obj)) # když ano, vrátím výsledek podle formuly
-    } else if(is.data.frame(obj) | is.matrix(obj)){ # když není vektor, testuju je to matice nebo data.frame
-      return(apply(obj,2,function(x){sd(x)/mean(x)})) # když ano, použiju apply podle 2 dimenze (stloupce) a získám variační koeficeent
-    } else{ # když typ proměnné se nám nehodí, vypíšu hrášku
-      print(paste('Vlozte vektor, matice nedo data.frame. Format ', class(obj), ' neni vhodny format')) # paste používám, pro konkatenace textů a výstupů typu
+    if(is.vector(obj)){ # zkontrolují jestli je to vektor, či není
+      return(sd(obj)/mean(obj)) # pokud ano, vrátím výsledek podle formuly
+    } else if(is.data.frame(obj) | is.matrix(obj)){ # když to není vektor, testuji je to matice nebo data.frame
+      return(apply(obj,2,function(x){sd(x)/mean(x)})) # když ano, použiju apply podle 2 dimenze (stloupce) a získám variační koeficient
+    } else{ # pokud se nám typ proměnné nehodí, vypíšu hlášku
+      print(paste('Vložte vektor, matice nedo data.frame. Format ', class(obj), ' není vhodný')) # paste používám, pro konkatenace textů a výstupů typu
       return(NULL)
     }
   }
@@ -55,10 +55,10 @@
   head(iris)
   
   # 3.b  Graf bude na ose x znázorňovat proměnnou Petal.Length a na ose y Petal.Width
-  ggplot(data=iris, aes(x=Petal.Length, y=Petal.Width)) # pouzivam prazdny ggplot
+  ggplot(data=iris, aes(x=Petal.Length, y=Petal.Width)) # používám prázdný ggplot
   
   # 3.c Data budou znázorněna formou bodů a velikost bodu bude odpovídat součinu hodnot Sepal.Length a Sepal.Width.
-  ggplot(data=iris) + geom_point(mapping = aes(x = Petal.Length, y = Petal.Width, size = Sepal.Length*Sepal.Width)) # použiju geom_point abych zobrazit body, do mappingu žádám size pro nastavení velikosti bodu
+  ggplot(data=iris) + geom_point(mapping = aes(x = Petal.Length, y = Petal.Width, size = Sepal.Length*Sepal.Width)) # použiju geom_point, abych zobrazil body, do mappingu zadám size pro nastavení velikosti bodů
 
   
   # 3.d Body budou barevně odlišené dle jednotlivé skupiny kosatců (species), přičemž použité barvy budou následující: #391e52, #b8af23 a #868cc9
@@ -69,7 +69,7 @@
       color=Species, 
       size = Sepal.Length*Sepal.Width))+
     scale_color_manual(values = c('#391e52', '#b8af23', '#868cc9'))
-    # Přidám attr color podle proměny Species (defaltne zobrazí barevný rozsah podle hodnoty Species). Pro definice vlastních barev, použiju scale_color_manual a dám do argumentu values vektor barev. Jiná možnost je nadefinovat konkrene barvy pro každou hodnotu Species, a zadat to pomocí ifelse do colors. Myslím že v naším případě je to zbytečné
+    # Přidám attr color podle proměny Species (defaltne zobrazí barevný rozsah podle hodnoty Species). Pro definice vlastních barev, použiju scale_color_manual a dám do argumentu values vektor barev. Jiná možnost je nadefinovat konkretní barvy pro každou hodnotu Species, a zadat to pomocí ifelse do colors. Myslím si, že v naším případě je to zbytečné
   
   
   # 3.e Pro každou skupinu bude v grafu zvlášťě vykreslena regresní křivka
@@ -89,7 +89,7 @@
         group=Species
       )
     )
-    # Regresní křivku přidám pomocí funkce geom_smooth. x,y budou vysvětlována a vysvětlující proměny (také je možné napsat regresní rovnice z dalšíma argumentama), metod lm pro regresní křivku, group=Species jsem použil pro vykreslení zvlášťě křivky pro každou skupinu.
+    # Regresní křívku přidám pomocí funkce geom_smooth. x,y budou vysvětlovaná a vysvětlující proměny (také je možné napsat regresní rovnice z dalšími argumenty), metod lm pro regresní křivku, group=Species jsem použil pro vykreslení křivek zvlášť pro každou skupinu.
   
   # 3.f Graf bude mít odpovídající popisky os x, y, a nadpis a dále i legendy.
   
@@ -112,7 +112,7 @@
     ylab("Šířka lístku") +
     labs(color = "Barvy podle Species", size='Velikost podle součinu hodnot
 Sepal.Length a Sepal.Width', title = 'Graf závislosti Petal.Length na Petal.Width. Dataset Iris') 
-    # xlab, y lab definuje nadpisy na osy, labs zadává další legendu.
+    # xlab, y lab definuje nadpisy na osách, labs zadává další legendu.
   
   # 3.g Graf rozdělte dle skupiny kosatců (Species) do samostatných oken, která budou uspořádaná v jednom sloupci
   ggplot(data=iris) + geom_point(mapping = aes(
@@ -135,7 +135,7 @@ Sepal.Length a Sepal.Width', title = 'Graf závislosti Petal.Length na Petal.Wid
     labs(color = "Barvy podle Species", size='Velikost podle součinu hodnot
   Sepal.Length a Sepal.Width', title = 'Graf závislosti Petal.Length na Petal.Width. Dataset Iris') +
     facet_wrap(~ Species, ncol=1)
-    # facet_wrap povolí rozdělit grafy pro každou skupinu hodnot Species a definuju ncol pro uspořádání do jedneho sloupce.
+    # facet_wrap povolí rozdělit grafy pro každou skupinu hodnot Species. Definuji ncol pro uspořádání do jednoho sloupce.
     
   
   
@@ -155,37 +155,37 @@ Sepal.Length a Sepal.Width', title = 'Graf závislosti Petal.Length na Petal.Wid
   head(gapminder)
   
   # 4.b
-  getwd() # zkontroluju pracovní adresář
+  getwd() # zkontroluji pracovní adresář
   setwd('/home/pinguin/Documents/Unicorn2020/Analyza dat - semestralka1/Analyza_dat') # nastavím pracovní adresář
-  getwd() # zkontroluju nový pracovní adresář
+  getwd() # zkontroluji nový pracovní adresář
   file.create("kontinenty.csv") # vytvořím soubor kontinenty.csv
-  continents <- gapminder %>%  group_by(continent, year) %>% summarise(populace=sum(pop), .groups='drop') # třídím dataset gapminder podle kontinentů a roky, vytvořím proměnnou populace, která se bude rovnat součtu populace pro pro každou kombinace rok - kontinent
+  continents <- gapminder %>%  group_by(continent, year) %>% summarise(populace=sum(pop), .groups='drop') # třídím dataset gapminder podle kontinentů a roky, vytvořím proměnnou populace, která se bude rovnat součtu populace pro každou kombinaci rok - kontinent
   write.csv(continents, file='kontinenty.csv', row.names = F)  # uložím výsledek do souboru
   
   # Poznámka: používám LibreOfficeCalc, který dává nastavit oddělovač při načítání souborů. Nevím jak to bude na MSOffice
   
   # 4.c
-  continents <- read.csv('kontinenty.csv') # načtu daty z souboru. Může se použít proměna z minulého tašku, ale za méně více logicky dělat to jako samostatní kód, který se dá použít zvlášť 
+  continents <- read.csv('kontinenty.csv') # načtu daty z souboru. Může se použít proměna z minulého zadání, ale podle mě logičtější dělat to jako samostatní kód, který se dá použít zvlášť 
   continents <- continents %>% group_by(year) %>% mutate(svet_pop=sum(populace)) # třídím to podle let a vytvořím novou prom. svet_pop, do které uložím součet populace pro jednotlivé roky
   write.csv(continents, file='kontinenty.csv', row.names = F) # uložím výsledek do souboru
   
   # 4.d
   file.create("Evropa.csv") # vytvořím soubor Evropa.csv
-  europe <- gapminder  %>% filter(continent == 'Europe') %>% select(country, year, pop) # z datasetu gapminder vyberu si jenom pozorování pro Europske země, pak nechám jenom stloupce country, year a pop
+  europe <- gapminder  %>% filter(continent == 'Europe') %>% select(country, year, pop) # z datasetu gapminder vyberu si jenom pozorování pro Europské země, pak nechám jenom stloupce country, year a pop
   write.csv(europe, file='Evropa.csv', row.names = F) # uložím výsledek do souboru
 
   # 4.e
   continents <- read.csv('kontinenty.csv') # načtu daty z souboru
   europe <- read.csv('Evropa.csv') # načtu daty z souboru
   
-  continents_filtered <- continents %>% filter(continent == 'Europe') %>% select(year, svet_pop) # z kontinentu si vyfiltruju jenom Europu a nechám jenom stloupe year, svet_pop
+  continents_filtered <- continents %>% filter(continent == 'Europe') %>% select(year, svet_pop) # z kontinentu si vyfiltruji jenom Evropu a nechám jenom stloupe year, svet_pop
   europe <- left_join(x = europe, y = continents_filtered, by='year') # zpojim tabulky podle let
-  europe <- europe[!duplicated(europe$pop),] # Zároveň bude obsahovat pouze unikátní pozorování - to jsem nepochopil podle čeho musí být unikátní? Country se opakuje pro každý rok, rok se opakuje podle země, svět populace podle let. Takže může být unikátní jenom pop
+  europe <- europe[!duplicated(europe$pop),] # Zároveň bude obsahovat pouze unikátní pozorování - nepochopil jsem podle čeho musí být unikátní? Country se opakuje pro každý rok, rok se opakuje podle země, svět populace podle let. Takže může být unikátní jenom pop
   write.csv(europe, file='Evropa.csv', row.names = F) # uložím výsledek do souboru
   
   # 4.f
   europe <- read.csv('Evropa.csv') # načtu daty z souboru
-  europe <- europe %>% mutate(podil_na_sv_p = round (pop/svet_pop, digits = 5)) %>% arrange(year, desc(podil_na_sv_p)) # vytvořím stloupec podil_na_sv_p do kterého uložím podíl populace státu v jednotlyvem roce na populace světu v stejném roce
+  europe <- europe %>% mutate(podil_na_sv_p = round (pop/svet_pop, digits = 5)) %>% arrange(year, desc(podil_na_sv_p)) # vytvořím stloupec podil_na_sv_p do kterého uložím podíl populace státu v jednotlivém roce na populace světu ve stejném roce
   write.csv(europe, file='Evropa.csv', row.names = F) # uložím výsledek do souboru
   
   # 4.g
@@ -228,7 +228,7 @@ Sepal.Length a Sepal.Width', title = 'Graf závislosti Petal.Length na Petal.Wid
   #    0*P +    0*U +    1*K <= 30    maximálně 30 klobás na skladě!
   #   Pc*P +   Uc*U +   Kc*K <= 2000  O návštěvě víte, že bude disponovat 2.000, - Kč
   
-  # Převedeme do matic pro spracovani lp
+  # Převedeme do matic pro zpracování lp
   
   A <- matrix(c(1, 0, 0,
                 0, 1, 1,
@@ -257,7 +257,7 @@ Sepal.Length a Sepal.Width', title = 'Graf závislosti Petal.Length na Petal.Wid
   # Maximální zisk může být 1290 Kč
   # Pro to potřebujeme 10 piv, 20 utopence, 30 klobás
   # 
-  # Dám výsledky do rovnici
+  # Dám výsledky do rovnice
   # 
   cbind(t(t(A)*vysledek$solution),R,B)
   
@@ -269,7 +269,7 @@ Sepal.Length a Sepal.Width', title = 'Graf závislosti Petal.Length na Petal.Wid
   #[5,] "0"   "0"   "30"   "<=" "30"   30 klobás   <= 30
   #[6,] "300" "500" "1200" "<=" "2000" 2000 kč     <= 2000
   #
-  # Odpověď: Pro maximalny zisk 1290 Kč budeme potřebovat prodat 10 piv, 20 utopence, 30 klobás
+  # Odpověď: Pro maximální zisk 1290 Kč budeme potřebovat prodat 10 piv, 20 utopenců, 30 klobás
   
 ################################################################################
 ################################################################################
@@ -303,16 +303,16 @@ Sepal.Length a Sepal.Width', title = 'Graf závislosti Petal.Length na Petal.Wid
   source <- read_html(url)
   
   # dostávám počet stránek paginace a odkaz pro jednotlivou stránku
-  pagination_last_href <- html_attr(html_nodes(source, "ul.pagination>li.last>a"),name="href") # získání cesty posledního odkazu strankovace
-  max_count <- as.numeric(strsplit(pagination_last_href, "=")[[1]][2]) # získání čísla poslední stránky strankovace
-  pagination_href <- strsplit(pagination_last_href, "=")[[1]][1] # odkaz na stránku strankovace bez čísla stránky
+  pagination_last_href <- html_attr(html_nodes(source, "ul.pagination>li.last>a"),name="href") # získání cesty posledního odkazu strankovače
+  max_count <- as.numeric(strsplit(pagination_last_href, "=")[[1]][2]) # získání čísla poslední stránky strankovače
+  pagination_href <- strsplit(pagination_last_href, "=")[[1]][1] # odkaz na stránku strankovače bez čísla stránky
   
   #paste0(base_url, pagination_href, '=', 1)
   
   for(i in 1:1){ #max_count # projdu cyklusem všichni stránky stránkování
     pagin_page <-read_html(paste0(base_url, pagination_href, '=', i)) # parsovani jednotlivé stránky obce/prehled?page
     obce <- html_nodes(pagin_page, "table.table.table-striped.table-condesed.support>tbody>tr") # získání řádků z tabulky obcí 
-    lapply(obce, function(obec) { # pomocí lapply proházím zednotlive řádky (obcí)
+    lapply(obce, function(obec) { # pomocí lapply procházím jednotlivé řádky (obcí)
       #print(obec %>% html_text())
       obec_name <- obec %>% html_nodes('td>a') %>% html_text() # získám název obce v string (první buňka, text odkazu)
       kraj_name <- obec %>% html_nodes('td>p') %>% html_text() # získám název kraje v string (první buňka, text odstavce)
@@ -325,20 +325,20 @@ Sepal.Length a Sepal.Width', title = 'Graf závislosti Petal.Length na Petal.Wid
       all_years <- html_nodes(obec_detail, "div.tab-content>.tab-pane") # vytáhnu z toho blok z tabulkama bez seznamu let
       lapply(all_years, function(year) { # projdu pomocí lapply všichni roky tohoto obce
         id <- year %>% html_attr(name = "id") # vytáhnu attribut id u div. Div je první child all_years, a jeho sourozence jsou bloky z tabulkama jednotlivých let. Id je v formátu xx0000
-        yearn <- gsub("[^0-9.-]", "", id) # získám rok pomocí gsub a regularky pro jen čísla
-        # pro kazdy rok podrebuju 1 data.frame. Zkontroluju existovani, pokud ne, zalozim
+        yearn <- gsub("[^0-9.-]", "", id) # získám rok pomocí gsub a regularky pouze pro čísla
+        # pro každý rok potřebuji 1 data.frame. Zkontroluji existování, pokud není, založím
         if(!exists(paste("obci", yearn, sep = "_"))){
-          assign(paste("obci", yearn, sep="_"), data.frame(), envir = .GlobalEnv) # pro definice nazevu prom z konlatenace roku, využiju assign, a dám to do globálního env
+          assign(paste("obci", yearn, sep="_"), data.frame(), envir = .GlobalEnv) # pro definice názvu prom. z konkatenace roku, využiji assign, a dám to do globálního env
         }
 
-        table <- year %>% html_nodes("table")  %>% html_table(fill=TRUE) # získám tabulku z statistikama za 1 rok v 1 obcí
+        table <- year %>% html_nodes("table")  %>% html_table(fill=TRUE) # získám tabulku se statistikami za 1 rok v 1 obcí
         my_df <- as.data.frame(table[[1]]) # převedu do data.frame
         my_df$obce = obec_name # přidám název obce
         my_df <- dcast(my_df, obce ~ Popis, value.var = "Hodnota") # převedu data.frame do širokého formátu
         my_df$kraj <- kraj_name # přidám název kraje
         my_df$orp <- orp # přidám orp
         my_df$okres <- okres_name # přidám název okresu
-        assign(paste("obci", yearn, sep="_"), join(eval(parse(text = paste("obci", yearn, sep="_"))), my_df, type = "full"), envir = .GlobalEnv) # přidám do data.frame roku jednotlivý obec. Join type=full může zpojit df z různím počtem stloupce a označit chybějící hodnoty NA
+        assign(paste("obci", yearn, sep="_"), join(eval(parse(text = paste("obci", yearn, sep="_"))), my_df, type = "full"), envir = .GlobalEnv) # přidám do data.frame roku jednotlivý obec. Join type=full může spojit df s různým počtem sloupců a označit chybějící hodnoty NA
         
       })
     })
