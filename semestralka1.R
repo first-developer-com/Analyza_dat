@@ -289,8 +289,10 @@ Sepal.Length a Sepal.Width', title = 'Graf závislosti Petal.Length na Petal.Wid
   
   # nastavím si složku pro daty
   getwd()
+  setwd('/home/pinguin/Documents/Unicorn2020/Analyza dat - semestralka1/Analyza_dat/ukol6Data')
   #setwd('/home/pinguin/Documents/Unicorn2020/Analyza dat - semestralka1/')
   dir.create('ukol6Data') # přidám složku pro csv soubory
+  Sys.chmod('ukol6Data','777') # nastavím práva adresáře
   setwd('ukol6Data') # nastavím novou dir, jako pracovní adresář
   #getwd()
   
@@ -348,8 +350,10 @@ Sepal.Length a Sepal.Width', title = 'Graf závislosti Petal.Length na Petal.Wid
 for(var in ls()){
   if(str_detect(var, '^obci_')){
     #print(i)
-    write.csv(eval(parse(text=var)), file=paste0(var,'.csv'), row.names = F) 
+    write.csv(eval(parse(text=var)), file=paste0(var, ".csv"), row.names = F) 
   } 
 }
-  write.csv(obci_1930, file=test.csv, row.names = F)
+  
+# Bohužel mi nedošlo si nainstalovat knihovnu RCzechia
+# Má závislou knihovnu units, která hodí chybu  při instalaci. Systém Ubuntu 20. Nenašel jsem řešení toho problému
   
