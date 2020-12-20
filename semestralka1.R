@@ -311,7 +311,8 @@ Sepal.Length a Sepal.Width', title = 'Graf závislosti Petal.Length na Petal.Wid
   
   #paste0(base_url, pagination_href, '=', 1)
   
-  for(i in 1:1){ #max_count # projdu cyklusem všichni stránky stránkování
+  for(i in 1:max_count){ #max_count # projdu cyklusem všichni stránky stránkování
+    print(i)
     pagin_page <-read_html(paste0(base_url, pagination_href, '=', i)) # parsovani jednotlivé stránky obce/prehled?page
     obce <- html_nodes(pagin_page, "table.table.table-striped.table-condesed.support>tbody>tr") # získání řádků z tabulky obcí 
     lapply(obce, function(obec) { # pomocí lapply procházím jednotlivé řádky (obcí)
