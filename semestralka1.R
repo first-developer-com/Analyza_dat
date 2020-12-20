@@ -355,6 +355,54 @@ for(var in ls()){
   } 
 }
   
-# Bohužel mi nedošlo si nainstalovat knihovnu RCzechia
-# Má závislou knihovnu units, která hodí chybu  při instalaci. Systém Ubuntu 20. Nenašel jsem řešení toho problému
+# Grafy
   
+#  load(".RData")
+  
+  library(RCzechia)
+  library(ggplot2)
+  library(dplyr)
+  library(sf)
+  
+
+  obce_for_graph <- data_frame(NAZ_OBEC=obci_2012$obce, obyvatel=obci_2012$`Počet obyvatel`, gymnazii=obci_2012$`Počet gymnázií`, podnikatele=obci_2012$`Počet podnikatelských subjektů celkem`)
+  
+  obce_for_graph$obyvatel <- as.numeric(sub(",", ".", gsub("[[:space:]]", "", obce_for_graph$obyvatel), fixed = TRUE))
+  
+  obce_for_graph$gymnazii <- as.numeric(sub(",", ".", gsub("[[:space:]]", "", obce_for_graph$gymnazii), fixed = TRUE))
+  
+  obce_for_graph$podnikatele <- as.numeric(sub(",", ".", gsub("[[:space:]]", "", obce_for_graph$podnikatele), fixed = TRUE))
+
+obce_for_graph <- inner_join(RCzechia::obce_polygony(), obce_for_graph, by="NAZ_OBEC")
+View(obce_for_graph)
+
+    # Počet obyvatel
+    ggplot()+
+      geom_sf(data = obce_for_graph, aes(fill = obyvatel), color = obce_for_graph$obyvatel) +
+      geom_sf(data = RCzechia::republika("low"), color = "gray30", fill = NA)+
+      scale_fill_viridis_c(trans = "log", labels = scales::comma) +
+      labs(title = "Počet obyvatel") +
+      theme_bw() +
+      theme(legend.text.align = 1,
+            legend.title.align = 0.5)
+    
+    #Počet gymnázií
+    ggplot()+
+      geom_sf(data = obce_for_graph, aes(fill = gymnazii), color = obce_for_graph$gymnazii) +
+      geom_sf(data = RCzechia::republika("low"), color = "gray30", fill = NA)+
+      scale_fill_viridis_c(trans = "log", labels = scales::comma) +
+      labs(title = "Počet gymnázií") +
+      theme_bw() +
+      theme(legend.text.align = 1,
+            legend.title.align = 0.5)
+    
+    #Počet podnikatelských subjektů celkem
+    ggplot()+
+      geom_sf(data = obce_for_graph, aes(fill = podnikatele), color = obce_for_graph$podnikatele) +
+      geom_sf(data = RCzechia::republika("low"), color = "gray30", fill = NA)+
+      scale_fill_viridis_c(trans = "log", labels = scales::comma) +
+      labs(title = "Počet podnikatelských subjektů celkem") +
+      theme_bw() +
+      theme(legend.text.align = 1,
+            legend.title.align = 0.5)
+    
